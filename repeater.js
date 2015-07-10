@@ -1,3 +1,8 @@
+// Copyright 2015 Jeremy Kohn. 
+// License: MIT
+
+// Version 0.1
+
 var Repeater = (function(window, document, undefined) {
 
 	// First, normalize timestamp function so it always returns the number of milliseconds since page/module loaded.
