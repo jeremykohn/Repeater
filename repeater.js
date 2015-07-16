@@ -1,7 +1,7 @@
 // Copyright 2015 Jeremy Kohn. 
 // License: MIT
 
-// Version 0.1
+// Version 0.2a
 
 var Repeater = (function(window, document, undefined) {
 
@@ -11,8 +11,13 @@ var Repeater = (function(window, document, undefined) {
 	// Initial timestamp. Time when module initially loaded.
 	var moduleLoadedAt = new Date().getTime();
 	
-	var timeNow;
+	var timeNow = function() {
+		return performance.now();
+	}
+	// Or new Date().getTime() if performance isn't available
 	
+	
+	/* 
 	if (window.performance) {
 		// IE 10+, Safari 8+, and all other modern browsers. https://developer.mozilla.org/en-US/docs/Web/API/Performance/now
 		timeNow = performance.now;
@@ -29,6 +34,8 @@ var Repeater = (function(window, document, undefined) {
 			return new Date().getTime() - moduleLoadedAt;
 		}
 	}
+	
+	*/
 	
 	// Other helper functions
 	
@@ -116,9 +123,11 @@ var Repeater = (function(window, document, undefined) {
 	// with other parameters as well.
 	
 	function createInterval(func, delay) {
-		var intervalRunner = {};
+		// var intervalRunner = {};
 		var functionToRepeat = func;
-		var normalDelay = delay;
+		var normalDelay = parseFloat(delay);
+		console.log('Delay is ' + delay + ' and its type is ' + typeof delay);
+		console.log('Normal delay is ' + normalDelay + ' and its type is ' + typeof normalDelay);
 		
 		var startTime;
 		var nextScheduledTime;
@@ -130,28 +139,39 @@ var Repeater = (function(window, document, undefined) {
 		
 		console.log('Create interval.');
 		
-		function simpleRepeat() {
+		function justRepeat() {
 			console.log('Check if running.');
 			if (running) {
 				console.log('Still running.');
 				functionToRepeat();
 				console.log('Function repeated.');
-				window.setTimeout(functionToRepeat, delay);
+				window.setTimeout(justRepeat, delay);
 				// In more advanced repeat, adjust delay.
 			}
 		}
 		
 		function repeat() {
+			console.log('Check if running.');
 			if (running) {
-				// Also if time limit hasn't passed (or won't be passed by elapsedTime += delay)
-				// Also if max repeats aren't used up (or won't be sued up by elapsed repeats += 1)
+				console.log('Yes, still running. Repeat.');
+
+				// Later, stop if maxRepeats are already reached
 				
-				console.log('Repeat.');
-				
-				functionToRepeat();
 				nextScheduledTime += normalDelay;
-				// Check if nextScheduledTime > timeLimit
-				adjustedDelay = nextScheduledTime - timeNow()
+				
+				// Later, check if nextScheduledTime > timeLimit
+				
+				//console.log('About to repeat function.');
+				functionToRepeat();
+				//console.log('Function repeated.');
+				
+				adjustedDelay = nextScheduledTime - timeNow();
+				
+				console.log(normalDelay);
+				console.log('Elapsed time so far is ' + (timeNow() - startTime));
+				console.log('It is now ' + timeNow());
+				console.log('Next scheduled time is ' + nextScheduledTime);
+				console.log('Adjusted delay is ' + adjustedDelay);
 				
 				window.setTimeout(repeat, adjustedDelay);
 			}
@@ -163,10 +183,22 @@ var Repeater = (function(window, document, undefined) {
 			running = true;
 			console.log('Running. Running equals ' + running);
 			startTime = timeNow();
+			nextScheduledTime = startTime + normalDelay;
 			console.log('Start time is ' + startTime);
-			window.setTimeout(simpleRepeat, normalDelay); // Change to repeat, adjustedDelay later
+			window.setTimeout(repeat, normalDelay); // Change to repeat, adjustedDelay later
 		}
 		
+		
+		function pauseRepeating() {
+			console.log('Pause.');
+			running = false;
+			elapsedTime = timeNow() - startTime;
+			console.log('Elapsed time = ' + elapsedTime);
+		}
+		
+		function resumeRepeating() {
+			// Start with elapsed time, calculate remaining time until next scheduled repetition...
+		}
 		
 		function reset() {
 			console.log('Reset.');
@@ -180,7 +212,11 @@ var Repeater = (function(window, document, undefined) {
 		
 		return {
 			start: startRepeating,
-			reset: reset
+			pause: pauseRepeating,
+			resume: resumeRepeating,
+			reset: reset,
+			elapsedTime: elapsedTime
+			
 			// Also getters for functionToRepeat, normalDelay, timeLimit, other params
 			// Also startTime, nextScheduledTime, elapsedTime, etc.
 			// Also setters / modifiers?

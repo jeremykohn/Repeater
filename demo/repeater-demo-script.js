@@ -3,10 +3,14 @@
 	
 	function selectedElements() {
 		var elements = {};
-		elements.start = document.getElementById('start-simple-repeat');
+		elements.startSimple = document.getElementById('start-simple-repeat');
 		elements.delay = document.getElementById('interval-length');
 		elements.maxRepeats = document.getElementById('max-repeats');
-		elements.randomField = document.getElementById('random-letter-field');		
+		elements.randomField = document.getElementById('random-letter-field');	
+		elements.start = document.getElementById('start');
+		elements.pause = document.getElementById('pause');
+		elements.resume = document.getElementById('resume');
+		elements.reset = document.getElementById('reset');
 		return elements;
 	}
 
@@ -29,27 +33,61 @@
 		elements.randomField.value = randomLetters;
 	}
 
+	function updateColor() {
+		var colorField = document.getElementById('color-field');
+	    colorField.style.background = chance.color({grayscale: true, format: 'hex'});
+	}
+
+	function updateTimeElapsed(repeater) {
+		timeElapsedField.textContent = repeater.elapsedTime;
+	}
+	
+	function repeatThis(repeater) {
+		displayRandomLetters();
+		updateColor();
+		// updateTimeElapsed(repeater);
+	}
+
+
+
 	function runWhenLoaded() {
-		alert('Loaded');
+		// alert('Loaded');
 		
 		var elements = selectedElements();
+		var repeaterOne = Repeater.createInterval(repeatThis, elements.delay.value);
+		var timeElapsedField = document.getElementById('time-elapsed');
 		
 		function simpleRepeatTest() {
 			console.log('Click');
-			Repeater.simpleRepeat(displayRandomLetters, elements.delay.value);
+			Repeater.simpleRepeat(repeatThis, elements.delay.value);
 		}
 		
 		function repeatNumberOfTimesTest() {
 			console.log('Click');
-			Repeater.repeatNumberOfTimes(displayRandomLetters, elements.delay.value, elements.maxRepeats.value);
+			Repeater.repeatNumberOfTimes(repeatThis, elements.delay.value, elements.maxRepeats.value);
 		}
 		
 		
-		
-		
-
-		elements.start.addEventListener('click', repeatNumberOfTimesTest);
+	
+		elements.startSimple.addEventListener('click', repeatNumberOfTimesTest);
 		// elements.start.addEventListener('click', simpleRepeatTest);
+		
+		
+		elements.start.addEventListener('click', repeaterOne.start);
+		elements.pause.addEventListener('click', repeaterOne.pause);
+		elements.resume.addEventListener('click', repeaterOne.resume);
+		elements.reset.addEventListener('click', repeaterOne.reset);
+		
+			// rAF here?
+		
+		
+		/*
+		function updateTimeElapsed(repeater) {
+			timeElapsedField.textContent = repeaterOne.elapsedTime;
+			window.requestAnimationFrame(updateTimeElapsed);
+		}
+		window.requestAnimationFrame(updateTimeElapsed);
+		*/
 
 	}
 
