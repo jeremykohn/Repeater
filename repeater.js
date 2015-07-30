@@ -1,7 +1,7 @@
 // Copyright 2015 Jeremy Kohn. 
 // License: MIT
 
-// Version 0.2a
+// Version 0.2
 
 var Repeater = (function(window, document, undefined) {
 
@@ -13,7 +13,7 @@ var Repeater = (function(window, document, undefined) {
 	
 	var timeNow = function() {
 		return performance.now();
-	}
+	};
 	// Or new Date().getTime() if performance isn't available
 	
 	
@@ -129,15 +129,25 @@ var Repeater = (function(window, document, undefined) {
 		console.log('Delay is ' + delay + ' and its type is ' + typeof delay);
 		console.log('Normal delay is ' + normalDelay + ' and its type is ' + typeof normalDelay);
 		
-		var startTime;
-		var nextScheduledTime;
-		var adjustedDelay;
+		var startTime, timeLastUpdated, nextScheduledTime, adjustedDelay, timeUntilNext;
 		
 		var elapsedTime = 0;
-		
 		var running = false;
 		
 		console.log('Create interval.');
+		
+		function updateElapsedTime() {
+			var now = timeNow();
+			elapsedTime += now - timeLastUpdated;
+			timeLastUpdated = now;
+			// Though when paused, set timeLastUpdated to resume-time, not pause-time.
+		}
+		
+		function getElapsedTime() {
+			updateElapsedTime();
+			return elapsedTime;
+		}
+		
 		
 		function justRepeat() {
 			console.log('Check if running.');
@@ -151,29 +161,29 @@ var Repeater = (function(window, document, undefined) {
 		}
 		
 		function repeat() {
-			console.log('Check if running.');
+			console.log("Still running?");
 			if (running) {
-				console.log('Yes, still running. Repeat.');
+				console.log('Still running. Repeat.');
 
-				// Later, stop if maxRepeats are already reached
-				
-				nextScheduledTime += normalDelay;
-				
+				// Later, stop if maxRepeats are already reached				
 				// Later, check if nextScheduledTime > timeLimit
 				
-				//console.log('About to repeat function.');
 				functionToRepeat();
-				//console.log('Function repeated.');
 				
+				nextScheduledTime += normalDelay; // Next, replace with 'calculate next scheduled time' function
+
 				adjustedDelay = nextScheduledTime - timeNow();
-				
+				updateElapsedTime();
+
 				console.log(normalDelay);
-				console.log('Elapsed time so far is ' + (timeNow() - startTime));
-				console.log('It is now ' + timeNow());
+				console.log('It is now ' + timeNow());				
+				console.log('Elapsed time so far is ' + elapsedTime);
 				console.log('Next scheduled time is ' + nextScheduledTime);
 				console.log('Adjusted delay is ' + adjustedDelay);
 				
 				window.setTimeout(repeat, adjustedDelay);
+			} else {
+				console.log('No.');
 			}
 		}
 		
@@ -183,6 +193,7 @@ var Repeater = (function(window, document, undefined) {
 			running = true;
 			console.log('Running. Running equals ' + running);
 			startTime = timeNow();
+			timeLastUpdated = startTime;
 			nextScheduledTime = startTime + normalDelay;
 			console.log('Start time is ' + startTime);
 			window.setTimeout(repeat, normalDelay); // Change to repeat, adjustedDelay later
@@ -192,12 +203,25 @@ var Repeater = (function(window, document, undefined) {
 		function pauseRepeating() {
 			console.log('Pause.');
 			running = false;
-			elapsedTime = timeNow() - startTime;
+			updateElapsedTime();
 			console.log('Elapsed time = ' + elapsedTime);
+			adjustedDelay = nextScheduledTime - timeNow();
+			console.log('Adjusted delay after resume will be ' + adjustedDelay);
 		}
 		
 		function resumeRepeating() {
-			// Start with elapsed time, calculate remaining time until next scheduled repetition...
+			// if status === 'paused'
+			console.log('Resume.');
+			var now = timeNow();
+			timeLastUpdated = now;
+			console.log('Last updated at ' + timeLastUpdated);
+			console.log('Elapsed time is ' + elapsedTime + ', should be the same as earlier.');
+			nextScheduledTime = now + adjustedDelay;
+			running = true;
+			window.setTimeout(repeat, adjustedDelay);
+			
+			// else, 'The repeater can't be resumed because it isn't paused.'
+
 		}
 		
 		function reset() {
@@ -220,7 +244,7 @@ var Repeater = (function(window, document, undefined) {
 			// Also getters for functionToRepeat, normalDelay, timeLimit, other params
 			// Also startTime, nextScheduledTime, elapsedTime, etc.
 			// Also setters / modifiers?
-		}
+		};
 		
 	}
 	
@@ -246,6 +270,6 @@ var Repeater = (function(window, document, undefined) {
 		
 		createInterval: createInterval,
 		createTimeout: createTimeout
-	}
+	};
 	
 }(window, document));
