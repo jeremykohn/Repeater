@@ -101,17 +101,17 @@ var Repeater = (function(window, document, undefined) {
         return params;
     }
 	
-		function simpleRepeat(functionToRepeat, delay) {
-			functionToRepeat();	
-			window.setTimeout(function(){simpleRepeat(functionToRepeat, delay);}, delay);
-		}
+	function simpleRepeat(functionToRepeat, delay) {
+		functionToRepeat();	
+		window.setTimeout(function(){simpleRepeat(functionToRepeat, delay);}, delay);
+	}
 		
-		function repeatNumberOfTimes(functionToRepeat, delay, repeatsRemaining) {
-			functionToRepeat();
-			if (--repeatsRemaining > 0) {	
-				window.setTimeout(function(){repeatNumberOfTimes(functionToRepeat, delay, repeatsRemaining);}, delay);
-			}
+	function repeatNumberOfTimes(functionToRepeat, delay, repeatsRemaining) {
+		functionToRepeat();
+		if (--repeatsRemaining > 0) {	
+			window.setTimeout(function(){repeatNumberOfTimes(functionToRepeat, delay, repeatsRemaining);}, delay);
 		}
+	}
 	
 	
 	////////////////
@@ -132,7 +132,7 @@ var Repeater = (function(window, document, undefined) {
 		var startTime, timeLastUpdated, nextScheduledTime, adjustedDelay, timeUntilNext;
 		
 		var elapsedTime = 0;
-		var running = false;
+		var runningState = 'stopped';
 		
 		console.log('Create interval.');
 		
@@ -151,19 +151,21 @@ var Repeater = (function(window, document, undefined) {
 		
 		function justRepeat() {
 			console.log('Check if running.');
-			if (running) {
+			if (runningState === 'running') {
 				console.log('Still running.');
 				functionToRepeat();
 				console.log('Function repeated.');
 				window.setTimeout(justRepeat, delay);
 				// In more advanced repeat, adjust delay.
+			} else {
+				console.log('Not running.');
 			}
 		}
 		
 		function repeat() {
 			console.log("Still running?");
-			if (running) {
-				console.log('Still running. Repeat.');
+			if (runningState === 'running') {
+				console.log('Yes. Repeat.');
 
 				// Later, stop if maxRepeats are already reached				
 				// Later, check if nextScheduledTime > timeLimit
@@ -183,55 +185,69 @@ var Repeater = (function(window, document, undefined) {
 				
 				window.setTimeout(repeat, adjustedDelay);
 			} else {
-				console.log('No.');
+				console.log('No. Stop repeating.');
 			}
 		}
 		
 		
 		function startRepeating() {
-			console.log('Start.');
-			running = true;
-			console.log('Running. Running equals ' + running);
-			startTime = timeNow();
-			timeLastUpdated = startTime;
-			nextScheduledTime = startTime + normalDelay;
-			console.log('Start time is ' + startTime);
-			window.setTimeout(repeat, normalDelay); // Change to repeat, adjustedDelay later
+			if (runningState === 'stopped') {
+				console.log('Start.');
+				runningState = 'running';
+				console.log('Running. Running state equals ' + runningState);
+				startTime = timeNow();
+				timeLastUpdated = startTime;
+				nextScheduledTime = startTime + normalDelay;
+				console.log('Start time is ' + startTime);
+				window.setTimeout(repeat, normalDelay); // Change to repeat, adjustedDelay later
+			} else {
+				console.log("Not ready to start.");
+			}
 		}
 		
 		
 		function pauseRepeating() {
-			console.log('Pause.');
-			running = false;
-			updateElapsedTime();
-			console.log('Elapsed time = ' + elapsedTime);
-			adjustedDelay = nextScheduledTime - timeNow();
-			console.log('Adjusted delay after resume will be ' + adjustedDelay);
+			if (runningState === 'running') {
+				console.log('Pause.');
+				runningState = 'paused';
+				updateElapsedTime();
+				console.log('Elapsed time = ' + elapsedTime);
+				adjustedDelay = nextScheduledTime - timeNow();
+				console.log('Adjusted delay after resume will be ' + adjustedDelay);
+			} else {
+				console.log("Not running, so can't be paused.");
+			}
+			
 		}
 		
 		function resumeRepeating() {
-			// if status === 'paused'
-			console.log('Resume.');
-			var now = timeNow();
-			timeLastUpdated = now;
-			console.log('Last updated at ' + timeLastUpdated);
-			console.log('Elapsed time is ' + elapsedTime + ', should be the same as earlier.');
-			nextScheduledTime = now + adjustedDelay;
-			running = true;
-			window.setTimeout(repeat, adjustedDelay);
-			
+			if (runningState === 'paused') {
+				console.log('Resume.');
+				var now = timeNow();
+				timeLastUpdated = now;
+				console.log('Last updated at ' + timeLastUpdated);
+				console.log('Elapsed time is ' + elapsedTime + ', should be the same as earlier.');
+				nextScheduledTime = now + adjustedDelay;
+				runningState = 'running';
+				window.setTimeout(repeat, adjustedDelay);
+			} else{
+				console.log('Not paused, so cannot be resumed.');
+			}
 			// else, 'The repeater can't be resumed because it isn't paused.'
 
 		}
 		
 		function reset() {
-			console.log('Reset.');
-			running = false;
-			console.log('Not running. Running equals ' + running);
-			startTime = undefined;
-			nextScheduledTime = undefined;
-			elapsedTime = 0;
-			// Reset start time, elapsed time, etc.
+			if (runningState === 'running' || runningState === 'paused') {
+				console.log('Reset.');
+				runningState = 'stopped';
+				console.log('Running state equals ' + runningState);
+				startTime = undefined;
+				nextScheduledTime = undefined;
+				elapsedTime = 0;
+			} else {
+				console.log("Not running or paused, so can't be reset.");
+			}
 		}
 		
 		return {
@@ -247,29 +263,13 @@ var Repeater = (function(window, document, undefined) {
 		};
 		
 	}
-	
-	
-	function createTimeout(func, delay) {
-		var timeoutRunner;
-		var params = {};
-		
-		params.functionToRepeat = func;
-		params.normalDelay = delay;
-		// params.argumentsForFunction = (all arguments after the first two)
 
-		params.maxRepeats = 1;
-		
-		timeoutRunner = createInterval(params);
-		
-		return timeoutRunner;
-	}
 	
 	return {
 		simpleRepeat: simpleRepeat,
 		repeatNumberOfTimes: repeatNumberOfTimes,
 		
 		createInterval: createInterval,
-		createTimeout: createTimeout
 	};
 	
 }(window, document));
