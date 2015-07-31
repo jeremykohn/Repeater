@@ -8,6 +8,6 @@ Repeater, true to its name, executes a JavaScript function at a regular interval
 * Specify a maximum number of repeats
 * Get the elapsed time
 
-Version: 0.3
+Version: 0.4
 
 License: MIT

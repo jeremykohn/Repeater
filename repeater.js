@@ -1,7 +1,7 @@
 // Copyright 2015 Jeremy Kohn. 
 // License: MIT
 
-// Version 0.3
+// Version 0.4
 
 var Repeater = (function(window, document, undefined) {
 
