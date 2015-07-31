@@ -1,10 +1,13 @@
 # Repeater
 
-Repeater is a JavaScript module that repeats any function at a regular interval. Repeater is designed to [replace](http://zetafleet.com/blog/why-i-consider-setinterval-harmful) JavaScript's native setInterval function.
+Introducing Repeater, a full-featured [replacement](http://zetafleet.com/blog/why-i-consider-setinterval-harmful for JavaScript's native setInterval.
 
-Try the demo! You can start, pause, resume, and reset the repeater at any time.
+Repeater, true to its name, executes a JavaScript function at a regular interval. It includes these features:
 
-Version: 0.2
+* Pause, resume, and reset the interval
+* Specify a maximum number of repeats
+* Get the elapsed time
+
+Version: 0.3
 
 License: MIT
-
