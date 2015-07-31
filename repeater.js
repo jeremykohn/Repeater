@@ -5,9 +5,10 @@
 
 var Repeater = (function(window, document, undefined) {
 
-	// First, normalize timestamp function so it always returns the number of milliseconds since page/module loaded.
+	// First, define timestamp function.
 	// Use performance.now if available, otherwise use less precise and/or less accurate substitutes.	
-	
+	// What matters here is relative differences, not absolute times,
+	// so 'time since page load' and 'time since 1970' work equally well.
 	function defineTimeNow() {
 		var timeNowFunction;
 
@@ -28,33 +29,9 @@ var Repeater = (function(window, document, undefined) {
 
 		return timeNowFunction;
 	}
-	
-	
-	/* 
-	if (window.performance) {
-		// IE 10+, Safari 8+, and all other modern browsers. https://developer.mozilla.org/en-US/docs/Web/API/Performance/now
-		timeNow = performance.now;
-	} else if (performanceTiming) {
-		// IE 9+, and older versions of other browsers except Safari. https://developer.mozilla.org/en-US/docs/Web/API/PerformanceTiming/navigationStart
-		timeNow = function() {
-			return new Date().getTime() - peformanceTiming.navigationStart;
-		}
-	} else {
-		// IE 8 and lower. 
-		// There's an offset, since moduleLoadedAt is slightly later than performanceTiming.navigationStart.
-		// Though practically it won't make much difference if only dealing with relative times.
-		timeNow = function() {
-			return new Date().getTime() - moduleLoadedAt;
-		}
-	}
-	
-	*/
-	
+
 	// Default parameters, in case user doesn't specify them.
 	// Put in closure so they can't be changed elsewhere in module.
-
-	// (Allow user to override default params?)
-
 	function defaultParams() {
 		var defaultFunction = function defaultFunction() {
 			console.log("Repeater.js error: No function specified.");
@@ -90,6 +67,8 @@ var Repeater = (function(window, document, undefined) {
 		return params;
 	}
 
+
+
 	function validateParams(paramsObject) {
 		var valid = true;
 		
@@ -119,29 +98,9 @@ var Repeater = (function(window, document, undefined) {
 		return valid;
 	}
 	
-	function argumentsToParams(argumentsArray) {
-		var params = {};
-		if (typeof argumentsArray[0] === 'function') {
-			// Syntax: createInterval(function[, delay[, list, of, additional, arguments]]);
-			params.functionToRepeat = argumentsArray[0];
-			if (argumentsArray.length >= 1) {
-				params.normalDelay = argumentsArray[1];
-			}
-			if (argumentsArray.length >= 2){
-				params.additionalArguments = argumentsArray.slice(2);
-			}
-		} else if (argumentsArray.length === 1 && typeof argumentsArray === 'object') {
-			// Syntax: createInterval({functionToRepeat: myFunc, delay: 1000, additionalArguments: [list, of, additional, arguments});
-			// With this syntax, createInterval takes only one argument -- an object that specifies all the parameters. 
-			// So just copy that object.
-			params = argumentsArray[0];
-		} else {
-          console.log('Need a function to start.');
-          console.log('Right now the arguments array is ' + argumentsArray);
-        }
 
-        return params;
-    }
+
+	// Basic functions, just to test.
 	
 	function simpleRepeat(functionToRepeat, delay) {
 		functionToRepeat();	
@@ -159,12 +118,14 @@ var Repeater = (function(window, document, undefined) {
 	////////////////
 	
 	// Main function to return. 
+	
 	// Rewrite this with params.
 	// Also with single object to keep track of state?
+
 	function createInterval(func, delay) {
 		// var intervalRunner = {};
 		var functionToRepeat = func;
-		var normalDelay = parseFloat(delay);
+		var normalDelay = parseFloat(delay); 
 		console.log('Delay is ' + delay + ' and its type is ' + typeof delay);
 		console.log('Normal delay is ' + normalDelay + ' and its type is ' + typeof normalDelay);
 		
@@ -175,10 +136,7 @@ var Repeater = (function(window, document, undefined) {
 		
 		console.log('Create interval.');
 
-
 		var timeNow = defineTimeNow();
-		// Either performance.now, Date.now, or new Date().getTime() depending on what's available.
-		// Or, var timeNow = performance.now if available, otherwise polyfill?
 
 		function getElapsedTime() {
 			if (runningState === 'running') {
@@ -186,12 +144,9 @@ var Repeater = (function(window, document, undefined) {
 			} else if (runningState === 'paused') {
 				return pausedAt - startTime - totalPausedTime;
 			} else {
-				console.log("Cannot get elapsed time, since timer isn't running.");
+				return 0;
 			}
 		}
-
-		// If running, timeNow - startTime - totalPausedTime
-		// If paused, pausedAt - startTime - totalPausedTime
 		
 		function getTotalPausedTime() {
 			return totalPausedTime || 0;
@@ -334,3 +289,5 @@ var Repeater = (function(window, document, undefined) {
 	// Also subroutines just for testing?
 	
 }(window, document));
+
+
