@@ -168,9 +168,9 @@ var Repeater = (function(window, document, undefined) {
 		console.log('Delay is ' + delay + ' and its type is ' + typeof delay);
 		console.log('Normal delay is ' + normalDelay + ' and its type is ' + typeof normalDelay);
 		
-		var startTime, timeLastUpdated, nextScheduledTime, adjustedDelay, timeUntilNext;
-		
-		var elapsedTime = 0;
+		var startTime, nextScheduledTime, adjustedDelay, timeUntilNext, pausedAt;
+
+		var totalPausedTime = 0;
 		var runningState = 'stopped';
 		
 		console.log('Create interval.');
@@ -180,19 +180,23 @@ var Repeater = (function(window, document, undefined) {
 		// Either performance.now, Date.now, or new Date().getTime() depending on what's available.
 		// Or, var timeNow = performance.now if available, otherwise polyfill?
 
-		
-		function updateElapsedTime() {
-			var now = timeNow();
-			elapsedTime += now - timeLastUpdated; // Change to 'now - startTime - totalPausedTime'
-			timeLastUpdated = now;
-			// Though when paused, set timeLastUpdated to resume-time, not pause-time.
-		}
-		
 		function getElapsedTime() {
-			updateElapsedTime();
-			return elapsedTime;
+			if (runningState === 'running') {
+				return timeNow() - startTime - totalPausedTime;
+			} else if (runningState === 'paused') {
+				return pausedAt - startTime - totalPausedTime;
+			} else {
+				console.log("Cannot get elapsed time, since timer isn't running.");
+			}
 		}
+
+		// If running, timeNow - startTime - totalPausedTime
+		// If paused, pausedAt - startTime - totalPausedTime
 		
+		function getTotalPausedTime() {
+			return totalPausedTime || 0;
+		}
+
 		function repeat() {
 			console.log("Still running?");
 			if (runningState === 'running') {
@@ -206,11 +210,11 @@ var Repeater = (function(window, document, undefined) {
 				nextScheduledTime += normalDelay; // Next, replace with 'calculate next scheduled time' function
 
 				adjustedDelay = nextScheduledTime - timeNow();
-				updateElapsedTime();
+				
 
 				console.log(normalDelay);
 				console.log('It is now ' + timeNow());				
-				console.log('Elapsed time so far is ' + elapsedTime);
+				
 				console.log('Next scheduled time is ' + nextScheduledTime);
 				console.log('Adjusted delay is ' + adjustedDelay);
 				
@@ -227,7 +231,6 @@ var Repeater = (function(window, document, undefined) {
 				runningState = 'running';
 				console.log('Running. Running state equals ' + runningState);
 				startTime = timeNow();
-				timeLastUpdated = startTime;
 				nextScheduledTime = startTime + normalDelay;
 				console.log('Start time is ' + startTime);
 				console.log('Next scheduled time is ' + nextScheduledTime);
@@ -242,10 +245,11 @@ var Repeater = (function(window, document, undefined) {
 			if (runningState === 'running') {
 				console.log('Pause.');
 				runningState = 'paused';
-				updateElapsedTime();
-				console.log('Elapsed time = ' + elapsedTime);
+				pausedAt = timeNow();
+				console.log("Paused at " + pausedAt);
 				adjustedDelay = nextScheduledTime - timeNow();
 				console.log('Adjusted delay after resume will be ' + adjustedDelay);
+
 			} else {
 				console.log("Not running, so can't be paused.");
 			}
@@ -256,9 +260,9 @@ var Repeater = (function(window, document, undefined) {
 			if (runningState === 'paused') {
 				console.log('Resume.');
 				var now = timeNow();
-				timeLastUpdated = now;
-				console.log('Last updated at ' + timeLastUpdated);
-				console.log('Elapsed time is ' + elapsedTime + ', should be the same as earlier.');
+				totalPausedTime += now - pausedAt;
+				pausedAt = null;
+				console.log("Total paused time is " + totalPausedTime);
 				nextScheduledTime = now + adjustedDelay;
 				runningState = 'running';
 				window.setTimeout(repeat, adjustedDelay);
@@ -277,6 +281,7 @@ var Repeater = (function(window, document, undefined) {
 				startTime = undefined;
 				nextScheduledTime = undefined;
 				elapsedTime = 0;
+				totalPausedTime = 0;
 			} else {
 				console.log("Not running or paused, so can't be reset.");
 			}
@@ -287,7 +292,8 @@ var Repeater = (function(window, document, undefined) {
 			pause: pauseRepeating,
 			resume: resumeRepeating,
 			reset: reset,
-			elapsedTime: getElapsedTime
+			elapsedTime: getElapsedTime,
+			totalPausedTime: getTotalPausedTime
 			
 			// Also getters for functionToRepeat, normalDelay, timeLimit, other params
 			// Also startTime, nextScheduledTime, elapsedTime, etc.

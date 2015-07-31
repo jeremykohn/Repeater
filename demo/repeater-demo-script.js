@@ -11,6 +11,8 @@
 		elements.pause = document.getElementById('pause');
 		elements.resume = document.getElementById('resume');
 		elements.reset = document.getElementById('reset');
+		elements.timeElapsedField = document.getElementById('time-elapsed');
+		elements.timePausedField = document.getElementById('time-paused');
 		return elements;
 	}
 
@@ -36,10 +38,6 @@
 	function updateColor() {
 		var colorField = document.getElementById('color-field');
 	    colorField.style.background = chance.color({grayscale: true, format: 'hex'});
-	}
-
-	function updateTimeElapsed(repeater) {
-		timeElapsedField.textContent = repeater.elapsedTime;
 	}
 	
 	function repeatThis(repeater) {
@@ -77,17 +75,17 @@
 		elements.pause.addEventListener('click', repeaterOne.pause);
 		elements.resume.addEventListener('click', repeaterOne.resume);
 		elements.reset.addEventListener('click', repeaterOne.reset);
+
 		
-			// rAF here?
 		
-		
-		/*
-		function updateTimeElapsed(repeater) {
-			timeElapsedField.textContent = repeaterOne.elapsedTime;
-			window.requestAnimationFrame(updateTimeElapsed);
+		function animFrame(repeater) {
+			elements.timeElapsedField.textContent = repeaterOne.elapsedTime();
+			elements.timePausedField.textContent = repeaterOne.totalPausedTime();
+			window.requestAnimationFrame(animFrame);
 		}
-		window.requestAnimationFrame(updateTimeElapsed);
-		*/
+
+		window.requestAnimationFrame(animFrame);
+		
 
 	}
 
