@@ -122,7 +122,7 @@ var Repeater = (function(window, document, undefined) {
 	// Rewrite this with params.
 	// Also with single object to keep track of state?
 
-	function createInterval(func, delay) {
+	function createRepeater(func, delay) {
 		// var intervalRunner = {};
 		var functionToRepeat = func;
 		var normalDelay = parseFloat(delay); 
@@ -130,7 +130,6 @@ var Repeater = (function(window, document, undefined) {
 		console.log('Normal delay is ' + normalDelay + ' and its type is ' + typeof normalDelay);
 		
 		var startTime, nextScheduledTime, adjustedDelay, timeUntilNext, pausedAt;
-
 		var totalPausedTime = 0;
 		var runningState = 'stopped';
 		
@@ -283,7 +282,7 @@ var Repeater = (function(window, document, undefined) {
 		simpleRepeat: simpleRepeat,
 		repeatNumberOfTimes: repeatNumberOfTimes,
 		
-		createInterval: createInterval,
+		createRepeater: createRepeater,
 		setRepeater: setRepeater
 	};
 	// Also subroutines just for testing?
