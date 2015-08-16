@@ -24,9 +24,9 @@ var Repeater = (function(window, document, undefined) {
                 return new Date().getTime();
             };
         }
-
         return timeNowFunction;
     }
+
 
     // Default parameters, in case user doesn't specify them.
     // Put in closure so they can't be changed elsewhere in module.
@@ -49,6 +49,7 @@ var Repeater = (function(window, document, undefined) {
     // Test.
     // console.log(defaultParams());
 
+
     function addDefaults(params, defaults) {
         console.log(defaults);
         console.log(params);
@@ -64,38 +65,6 @@ var Repeater = (function(window, document, undefined) {
         });
         return params;
     }
-
-
-
-    function validateParams(paramsObject) {
-        var valid = true;
-
-        if (paramsObject.functionToRepeat === undefined) {
-            console.log('You must specify a function to repeat.');
-            valid = false;
-        } else if (typeof paramsObject.functionToRepeat === 'function') {
-            console.log('functionToRepeat must be a function.');
-            valid = false;
-        }
-
-        if (!isInteger(paramsObject.normalDelay)) {
-            console.log('The delay (in milliseconds) must be an integer.');
-            valid = false;
-        }
-
-        // Remember, the additional arguments are optional.
-        if (additionalArguments !== undefined) {
-            if (Array.isArray(additionalArguments) === false) {
-                console.log('Additional arguments must be in the form of an array.');
-            }
-        }
-        // That might never happen, though -- argumentsArrayToParams should already have made it an array.
-
-        // etc.
-
-        return valid;
-    }
-
 
 
     // Basic functions, just to test.
@@ -253,12 +222,13 @@ var Repeater = (function(window, document, undefined) {
 
             // Also getters for functionToRepeat, normalDelay, timeLimit, other params
             // Also startTime, nextScheduledTime, elapsedTime, etc.
+            // Also timeRemaining, repeatsRemaining
             // Also setters / modifiers?
         };
 
     }
 
-
+    ///////////
 
     // Simple replacement for setInterval.
     function setRepeater(functionToRepeat, delay) {
