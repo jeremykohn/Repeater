@@ -16,7 +16,7 @@ To pause the repetitions:
 
 Then, to resume where it left off:
 
-`r.resume();
+`r.resume()`;
 
 To stop or cancel the repetitions:
 
