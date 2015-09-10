@@ -88,23 +88,22 @@ var Repeater = (function(window, document, undefined) {
 
     ////////////////
 
-    // Main function to return. 
+    // Main functions to return. 
 
     // Rewrite this with params.
     // Also with single object to keep track of state?
 
     function createRepeater(func, delay) {
-        // var intervalRunner = {};
-        var functionToRepeat = func;
-        var normalDelay = parseFloat(delay);
-        console.log('Delay is ' + delay + ' and its type is ' + typeof delay);
-        console.log('Normal delay is ' + normalDelay + ' and its type is ' + typeof normalDelay);
 
-        var startTime, nextScheduledTime, adjustedDelay, timeUntilNext, pausedAt;
+    	var startTime, nextScheduledTime, adjustedDelay, timeUntilNext, pausedAt;
         var totalPausedTime = 0;
         var runningState = 'stopped';
-
-        console.log('Create interval.');
+        var functionToRepeat = func;
+        var normalDelay = parseFloat(delay);
+        
+        console.log('Delay is ' + delay + ' and its type is ' + typeof delay);
+        console.log('Normal delay is ' + normalDelay + ' and its type is ' + typeof normalDelay);
+		console.log('Create interval.');
 
         var timeNow = defineTimeNow();
 

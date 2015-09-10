@@ -25,7 +25,7 @@
 
 <!-- <link rel="stylesheet" href="demo.css" type="text/css"> -->
 
-<script src="http://chancejs.com/chance.min.js"></script>
+<script src="http://chancejs.com/chance.min.js"></script><!-- No good. Need to download the script for demo, use local file, not online. -->
 <script src="../repeater.js"></script>
 <script src="repeater-demo-script.js"></script>
 
@@ -35,22 +35,30 @@
 <h2>Repeater: Extra features and better accuracy for JavaScript timeouts and intervals. (<a href="https://github.com/jeremykohn/Repeater">GitHub</a>)</h2>
 
 <div id='demo-1'>
+
+
 <h3>Demo 1: Set maximum number of repeats</h3>
 Creates two random letters and change color every <input type='text' id='interval-length' value='1000'> milliseconds.<br>
+
 Repeats <input type='text' id='max-repeats' value='5'> times. <br>
-Time elapsed: <span id='time-elapsed'></span><br>
-Time paused: <span id='time-paused'></span><br>
-Random letters: <input type="text" id='random-letter-field'><br><br>
+
+
+
 <input type='button' id='start-simple-repeat' value='Start'><br><br>
 <h3>Demo 2: Start, pause, resume, and reset</h3>
+Time elapsed: <span id='time-elapsed'></span><br>
+Time paused: <span id='time-paused'></span><br>
 <input type='button' id='start' value='Start repeating'>
 <input type='button' id='pause' value='Pause repeating'>
 <input type='button' id='resume' value='Resume repeating'>
 <input type='button' id='reset' value='Reset repeating'>
 </div>
 
+<div id="letters-and-color-field">
+<br><br>
+Random letters: <input type="text" id='random-letter-field'><br><br>
 <div id='color-field' class='color-field'></div>
-
+</div>
 
 </body>
 </html>

@@ -52,7 +52,7 @@
 		// alert('Loaded');
 		
 		var elements = selectedElements();
-		var repeaterOne = Repeater.createInterval(repeatThis, elements.delay.value);
+		var repeaterOne = Repeater.createRepeater(repeatThis, elements.delay.value);
 		var timeElapsedField = document.getElementById('time-elapsed');
 		
 		function simpleRepeatTest() {
