@@ -6,6 +6,14 @@ It adds features such as pause-and-resume, while improving reliability and maint
 
 Repeater is now in beta and more features are coming, so check back here soon!
 
+## Installation
+
+Download the file *repeater.js*, then add this line to the <head> of your HTML page:
+
+`<script src="[filepath]/repeater.js"></script>`
+
+Replace `[filepath]` with the path to the downloaded repeater.js file.
+
 ## Usage
 
 Set a function (`func`) to repeat at a specified interval in milliseconds (`delay`):
