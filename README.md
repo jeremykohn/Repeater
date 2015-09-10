@@ -12,7 +12,7 @@ Download the file *repeater.js*, then add this line to the <head> of your HTML p
 
 `<script src="[filepath]/repeater.js"></script>`
 
-Replace `[filepath]` with the path to the downloaded repeater.js file.
+Replace `[filepath]` with the relative path to the downloaded repeater.js file.
 
 ## Usage
 
