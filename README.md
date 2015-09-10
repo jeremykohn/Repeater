@@ -18,7 +18,7 @@ Replace `[filepath]` with the relative path to the downloaded repeater.js file.
 
 Set a function (`func`) to repeat at a specified interval in milliseconds (`delay`):
 
-`var r = Repeater.set(func, delay);`
+`var r = Repeater.setRepeater(func, delay);`
 
 To pause the repetitions:
 
