@@ -1,3 +1,11 @@
+# Repeater
+
+Introducing Repeater, a JavaScript module to run any function at a specified interval. 
+
+It also includes extra features such as pause-and-resume.
+
+Repeater is now in beta and more features are coming, so check back here soon!
+
 ## Usage
 
 Set a function (`func`) to repeat at a specified interval in milliseconds (`delay`):
