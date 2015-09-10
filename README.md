@@ -1,8 +1,8 @@
 # Repeater
 
-Introducing Repeater, a JavaScript module to run any function at a specified interval. 
+Introducing Repeater, an advanced version of setInterval in JavaScript. 
 
-It also includes extra features such as pause-and-resume.
+It adds features such as pause-and-resume, while improving reliability and maintaining accuracy.
 
 Repeater is now in beta and more features are coming, so check back here soon!
 
