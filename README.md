@@ -8,7 +8,7 @@ Repeater is now in beta and more features are coming, so check back here soon!
 
 ## Installation
 
-Download the file *repeater.js*, then add this line to the <head> of your HTML page:
+Download the file *repeater.js*, then add this line to the `<head>` of your HTML page:
 
 `<script src="[filepath]/repeater.js"></script>`
 
