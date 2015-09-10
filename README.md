@@ -1,9 +1,3 @@
-# Repeater: Better than setInterval.
-
-Introducing Repeater, a replacement for setInterval in JavaScript.
-
-Repeater does whatever setInterval can do, and so much more!
-
 ## Usage
 
 Set a function (`func`) to repeat at a specified interval in milliseconds (`delay`):
